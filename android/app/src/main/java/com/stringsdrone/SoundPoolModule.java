@@ -37,7 +37,7 @@ public class SoundPoolModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void load(String fileName, final Promise promise) {
+    public void load(final String fileName, final Promise promise) {
         int res = context.getResources().getIdentifier(fileName, "raw", context.getPackageName());
 
         if (res == 0) {
@@ -62,6 +62,7 @@ public class SoundPoolModule extends ReactContextBaseJavaModule {
                     } else {
                         WritableMap result = Arguments.createMap();
                         result.putInt("soundId", soundId);
+                        result.putString("file", fileName);
                         promise.resolve(result);
                     }
 
