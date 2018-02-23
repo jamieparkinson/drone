@@ -1,4 +1,5 @@
 import { AppRegistry } from 'react-native';
-import App from './src/App';
+import React from 'react';
+import { app } from './lib/js/src/app';
 
-AppRegistry.registerComponent('StringsDrone', () => App);
+AppRegistry.registerComponent('StringsDrone', () => app);
