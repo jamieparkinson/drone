@@ -2,6 +2,8 @@ package com.stringsdrone;
 
 import android.media.AudioAttributes;
 import android.media.SoundPool;
+import android.util.Log;
+import android.util.SparseArray;
 import com.facebook.react.bridge.*;
 
 import java.util.HashMap;
@@ -14,6 +16,7 @@ public class SoundPoolModule extends ReactContextBaseJavaModule {
 
     private SoundPool pool;
     private ReactApplicationContext context;
+    private SparseArray<Promise> loaderPromises = new SparseArray<>();
 
     public SoundPoolModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -34,10 +37,30 @@ public class SoundPoolModule extends ReactContextBaseJavaModule {
                 .setMaxStreams(options.getInt("maxStreams"))
                 .setAudioAttributes(attributes)
                 .build();
+
+        pool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public synchronized void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                Log.d("SoundPool", String.format("Loaded sample %d", sampleId));
+
+                Promise promise = loaderPromises.get(sampleId);
+
+                if (promise != null) {
+                    if (status == 0) {
+                        WritableMap result = Arguments.createMap();
+                        result.putInt("soundId", sampleId);
+                        promise.resolve(result);
+                    } else {
+                        promise.reject(E_LOAD_ERROR, "error loading file");
+                    }
+                    loaderPromises.remove(sampleId);
+                }
+            }
+        });
     }
 
     @ReactMethod
-    public void load(final String fileName, final Promise promise) {
+    public void load(String fileName, Promise promise) {
         int res = context.getResources().getIdentifier(fileName, "raw", context.getPackageName());
 
         if (res == 0) {
@@ -45,31 +68,10 @@ public class SoundPoolModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        final int soundId = pool.load(context.getApplicationContext(), res, 1);
+        int sampleId = pool.load(context.getApplicationContext(), res, 1);
+        loaderPromises.put(sampleId, promise);
 
-        pool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            private boolean wasResolved = false;
-
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                if (wasResolved) {
-                    return;
-                }
-
-                if (sampleId == soundId) {
-                    if (status != 0) {
-                        promise.reject(E_LOAD_ERROR, "error loading file");
-                    } else {
-                        WritableMap result = Arguments.createMap();
-                        result.putInt("soundId", soundId);
-                        result.putString("file", fileName);
-                        promise.resolve(result);
-                    }
-
-                    wasResolved = true;
-                }
-            }
-        });
+        Log.d("SoundPool", String.format("Loading %s with id %d", fileName, sampleId));
     }
 
     @ReactMethod
