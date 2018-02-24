@@ -12,8 +12,7 @@ type soundId = int;
 
 [@bs.deriving {jsConverter: newType}]
 type loadResult = {
-    file: string,
-    soundId: soundId
+    soundId
 };
 
 [@bs.deriving {jsConverter: newType}]
@@ -43,11 +42,12 @@ let init = (options: poolOptions) => options |> poolOptionsToJs |> (o => _pool##
 let loadNote = (file: fileId) => _pool##load(file)
     |> Js.Promise.(then_(value => value |> loadResultFromJs |> resolve));
 
-let loadNotes = (files: array(fileId)) => Array.map((fileId) => _pool##load(fileId), files)
+let loadNotes = (files: array(fileId)) => files
+    |> Array.map((fileId) => _pool##load(fileId))
     |> Js.Promise.all
-    |> Js.Promise.(then_(value => value |> Array.map(loadResultFromJs) |> resolve));
+    |> Js.Promise.(then_(ids => ids |> Array.map(loadResultFromJs) |> resolve));
 
-let play = (sound: soundId, options: playOptions) => options
+let play = (options: playOptions, sound: soundId) => options
     |> playOptionsToJs
     |> (o => _pool##play(sound, o));
 
