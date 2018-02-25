@@ -40,7 +40,7 @@ public class SoundPoolModule extends ReactContextBaseJavaModule {
 
         pool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
-            public synchronized void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                 Log.d("SoundPool", String.format("Loaded sample %d", sampleId));
 
                 Promise promise = loaderPromises.get(sampleId);
@@ -68,8 +68,8 @@ public class SoundPoolModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        int sampleId = pool.load(context.getApplicationContext(), res, 1);
-        loaderPromises.put(sampleId, promise);
+        int sampleId = this.pool.load(this.context.getApplicationContext(), res, 1);
+        this.loaderPromises.put(sampleId, promise);
 
         Log.d("SoundPool", String.format("Loading %s with id %d", fileName, sampleId));
     }
