@@ -1,4 +1,3 @@
-open BsReactNative;
 open RNSvg;
 
 let component = ReasonReact.statelessComponent("Dial");

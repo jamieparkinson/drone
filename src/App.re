@@ -86,6 +86,7 @@ let make = (_children) => {
     },
     render: (_self) =>
         <View style=Style.(style([flex(1.), justifyContent(Center), alignItems(Center)]))>
+            <Tick />
             <Dial />
         </View>
 };
