@@ -84,16 +84,8 @@ let make = (_children) => {
         self.send(LoadSounds);
         ReasonReact.NoUpdate;
     },
-    render: (self) =>
+    render: (_self) =>
         <View style=Style.(style([flex(1.), justifyContent(Center), alignItems(Center)]))>
-            {switch (self.state.sounds |> NotesMap.cardinal) {
-                | 12 =>
-                    <View>{ ReasonReact.arrayToElement(
-                        Array.map(renderNoteButton(note => PlaySound(note) |> self.send), notes)
-                    )}</View>
-
-                | _ =>
-                    <Text value="Loading..." />
-            }}
+            <Dial />
         </View>
 };
