@@ -34,10 +34,22 @@ let noteNameStyle = (index: Layout.clockIndex) => {
     ]));
 };
 
-let make = (_children) => {
+let dialRotationStyle = (note: Notes.note) => Style.(
+    Transform.make(
+        ~rotate={
+            note
+            |> Notes.findIndex(Notes.all)
+            |> Layout.getTheta
+            |> n => string_of_float(-1. *. n) ++ "rad"
+        },
+        ()
+    )
+);
+
+let make = (~note, _children) => {
     ...component,
     render: (_self) =>
-        <View style={Style.(style([ position(Relative) ]))}>
+        <View style={Style.(style([ position(Relative), dialRotationStyle(note) ]))}>
             <Svg
                 width=dialWidth
                 height=dialHeight

@@ -29,6 +29,16 @@ let all = [|
     B
 |];
 
+let findIndex = (notes: array(note), noteToFind: note) => {
+    let rec findLoop = (note, index) =>
+        if (notes[index] == note) {
+            index;
+        } else {
+            findLoop(note, index + 1);
+        };
+    findLoop(noteToFind, 0);
+};
+
 let getResource = (note, octave) => {
     let name =
         switch (note) {

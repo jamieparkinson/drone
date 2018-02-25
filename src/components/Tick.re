@@ -8,7 +8,7 @@ let width = 0.5 *. height;
 let shape: array(Polygon.point) = [|
     (0., 0.),
     (width, 0.),
-    (0.5 *. width, height)
+    (0.5 *. width, height -. 1.)
 |];
 
 let make = (_children) => {
