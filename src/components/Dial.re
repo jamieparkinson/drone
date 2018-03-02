@@ -12,7 +12,7 @@ let dialHeight: float = dialWidth;
 
 let noteNameStyle = (index: Layout.clockIndex) => {
     let { x, y }: Layout.circlePosition = circlePosition(index);
-    let rotation = (Layout.getTheta(index) |> string_of_float) ++ "rad";
+    let rotation = (Layout.getThetaFromIndex(index) |> string_of_float) ++ "rad";
 
     let topPosition = (circleRadius -. 9.) -. y;
     let leftPosition = (circleRadius -. 9.) +. x;
@@ -34,22 +34,10 @@ let noteNameStyle = (index: Layout.clockIndex) => {
     ]));
 };
 
-let dialRotationStyle = (note: Notes.note) => Style.(
-    Transform.make(
-        ~rotate={
-            note
-            |> Notes.findIndex(Notes.all)
-            |> Layout.getTheta
-            |> n => string_of_float(-1. *. n) ++ "rad"
-        },
-        ()
-    )
-);
-
-let make = (~note, _children) => {
+let make = (_children) => {
     ...component,
     render: (_self) =>
-        <View style={Style.(style([ position(Relative), dialRotationStyle(note) ]))}>
+        <View style={Style.(style([ position(Relative) ]))}>
             <Svg
                 width=dialWidth
                 height=dialHeight

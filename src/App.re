@@ -21,7 +21,8 @@ let make = (_children) => {
         },
     render: ({ state }) =>
         <View style=Style.(style([flex(1.), justifyContent(Center), alignItems(Center)]))>
-            <Tick />
-            <Dial note=state.note />
+            <Rotatable>
+                <Dial />
+            </Rotatable>
         </View>
 };

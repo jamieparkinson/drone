@@ -29,15 +29,21 @@ let all = [|
     B
 |];
 
-let findIndex = (notes: array(note), noteToFind: note) => {
-    let rec findLoop = (note, index) =>
-        if (notes[index] == note) {
-            index;
-        } else {
-            findLoop(note, index + 1);
-        };
-    findLoop(noteToFind, 0);
-};
+let getIndex = (note) =>
+    switch (note) {
+    | C => 0
+    | Cis => 1
+    | D => 2
+    | Ees => 3
+    | E => 4
+    | F => 5
+    | Fis => 6
+    | G => 7
+    | Aes => 8
+    | A => 9
+    | Bes => 10
+    | B => 11
+    };
 
 let getResource = (note, octave) => {
     let name =
