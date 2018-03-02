@@ -7,6 +7,10 @@ type state = {
     note: Notes.note
 };
 
+let ticks = Notes.all
+    |> Array.map(Notes.getIndex)
+    |> Array.map(Layout.getThetaFromIndex);
+
 let component = ReasonReact.reducerComponent("App");
 
 let make = (_children) => {
@@ -21,7 +25,7 @@ let make = (_children) => {
         },
     render: ({ state }) =>
         <View style=Style.(style([flex(1.), justifyContent(Center), alignItems(Center)]))>
-            <Rotatable>
+            <Rotatable ticks={Notes.all |> Array.map(Notes.getIndex) |> Array.map(Layout.getThetaFromIndex)}>
                 <Dial />
             </Rotatable>
         </View>

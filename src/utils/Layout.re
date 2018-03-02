@@ -22,18 +22,16 @@ let getCirclePosition = (r: radius, index: clockIndex): circlePosition => {
     };
 };
 
+let getPrincipalValue = (theta: float) => {
+    let value = mod_float(theta, 2. *. pi);
+    value < 0. ? value +. (2. *. pi) : value;
+};
+
 let getThetaFromPosition = (origin: position, position: position) => {
     let deltaX = position.x -. origin.x;
     let deltaY = origin.y -. position.y;
 
     let theta = -.atan2(deltaY, deltaX) +. (pi /. 2.);
-    let positiveTheta = if (theta < 0.) {
-        theta +. (2. *. pi);
-    } else if (theta > (2. *. pi)) {
-        theta -. (2. *. pi);
-    } else {
-        theta;
-    };
 
-    positiveTheta;
+    getPrincipalValue(theta);
 };

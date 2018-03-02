@@ -31,12 +31,13 @@ let rotatingViewStyle = (angle: Touch.angle) => Style.(style([
     )
 ]));
 
-let make = (children) => {
+let make = (~ticks: Touch.ticks, children) => {
     ...component,
     initialState: () => {
         let angle = AnimatedRe.Value.create(0.);
+        AnimatedRe.Value.addListener(angle, (v) => Js.log(v##value *. 57.2958));
         {
-            panResponder: Touch.panResponderAboutOrigin(~origin={ x: 0., y: 0. }, ~angle=angle),
+            panResponder: Touch.panResponderAboutOrigin(~origin={ x: 0., y: 0. }, ~angle=angle, ~ticks=ticks),
             angle
         };
     },
@@ -44,7 +45,11 @@ let make = (children) => {
         switch (action) {
         | SetOrigin(origin) => ReasonReact.Update({
             ...state,
-            panResponder: Touch.panResponderAboutOrigin(~origin=origin, ~angle=state.angle)
+            panResponder: Touch.panResponderAboutOrigin(
+                ~origin=origin,
+                ~angle=state.angle,
+                ~ticks=ticks
+            )
          })
         },
     render: (self) =>
