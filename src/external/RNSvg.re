@@ -3,10 +3,10 @@ module Svg = {
     let make = (~width: float, ~height: float, children) =>
         ReasonReact.wrapJsForReason(
             ~reactClass=svg,
-            ~props=Js.Nullable.({
+            ~props={
                 "width": width,
                 "height": height
-            }),
+            },
             children
         );
 };

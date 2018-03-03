@@ -23,7 +23,7 @@ let make = (_children) => {
         | SetNote(note) =>
             ReasonReact.Update({ note: note })
         },
-    render: ({ state }) =>
+    render: (_self) =>
         <View style=Style.(style([flex(1.), justifyContent(Center), alignItems(Center)]))>
             <Rotatable
                 ticks={Notes.all |> Array.map(Notes.getIndex) |> Array.map(Layout.getThetaFromIndex)}
