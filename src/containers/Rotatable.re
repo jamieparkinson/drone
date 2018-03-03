@@ -31,13 +31,17 @@ let rotatingViewStyle = (angle: Touch.angle) => Style.(style([
     )
 ]));
 
-let make = (~ticks: Touch.ticks, children) => {
+let make = (~ticks: Touch.ticks, ~onRelease: option(Touch.releaseHandler)=?, children) => {
     ...component,
     initialState: () => {
         let angle = AnimatedRe.Value.create(0.);
-        AnimatedRe.Value.addListener(angle, (v) => Js.log(v##value *. 57.2958));
         {
-            panResponder: Touch.panResponderAboutOrigin(~origin={ x: 0., y: 0. }, ~angle=angle, ~ticks=ticks),
+            panResponder: Touch.panResponderAboutOrigin(
+                ~origin={ x: 0., y: 0. },
+                ~angle=angle,
+                ~ticks=ticks,
+                ()
+            ),
             angle
         };
     },
@@ -48,7 +52,9 @@ let make = (~ticks: Touch.ticks, children) => {
             panResponder: Touch.panResponderAboutOrigin(
                 ~origin=origin,
                 ~angle=state.angle,
-                ~ticks=ticks
+                ~ticks=ticks,
+                ~onRelease=?onRelease,
+                ()
             )
          })
         },

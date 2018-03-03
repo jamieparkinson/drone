@@ -2,6 +2,11 @@ open BsReactNative;
 
 type angle = AnimatedRe.Value.t;
 type ticks = array(float);
+type tickRecord = {
+    value: float,
+    index: int
+};
+type releaseHandler = int => unit;
 
 let releaseAngle_ = ref(0.);
 let offset_ = ref(0.);
@@ -40,6 +45,7 @@ let handleRelease =
         ~origin: Layout.position,
         ~angle: angle,
         ~ticks: ticks,
+        ~handleRelease: option(releaseHandler)=?,
         _event,
         { moveX, moveY }: PanResponder.gestureState
     ) => {
@@ -47,30 +53,36 @@ let handleRelease =
     let releaseAngle = Layout.getPrincipalValue(currentTouchAngle +. offset_^);
 
     let closestTick = ticks
+        |> Array.mapi((i, tick) => { value: tick, index: i })
         |> Array.fold_left(
             (closestTick, tick) => {
-                let isSmaller = abs_float(releaseAngle -. tick) < abs_float(releaseAngle -. closestTick);
+                let isSmaller = abs_float(releaseAngle -. tick.value) < abs_float(releaseAngle -. closestTick.value);
                 isSmaller ? tick : closestTick;
             },
-            0.
+            { index: -1, value: max_float }
         );
 
-    Js.log(releaseAngle *. 57.2958);
+    let handleRelease = switch(handleRelease) {
+    | None => (_n) => ()
+    | Some(callback) => callback
+    };
 
     let springAnimation = Animated.Value.Spring.animate(
         ~value=angle,
-        ~toValue=`raw(closestTick),
+        ~toValue=`raw(closestTick.value),
+        ~speed=20.,
+        ~onComplete=(result) => Js.to_bool(result##finished) ? handleRelease(closestTick.index) : (),
         ()
     );
     Animated.CompositeAnimation.start(springAnimation, ());
 
-    releaseAngle_ := closestTick;
+    releaseAngle_ := closestTick.value;
 };
 
-let panResponderAboutOrigin = (~origin: Layout.position, ~angle: angle, ~ticks: ticks) =>
+let panResponderAboutOrigin = (~origin: Layout.position, ~angle: angle, ~ticks: ticks, ~onRelease: option(releaseHandler)=?, ()) =>
     PanResponder.create(
         ~onStartShouldSetPanResponder=PanResponder.callback(handleStart(~origin=origin, ~angle=angle)),
-        ~onPanResponderRelease=PanResponder.callback(handleRelease(~origin=origin, ~angle=angle, ~ticks=ticks)),
+        ~onPanResponderRelease=PanResponder.callback(handleRelease(~origin=origin, ~angle=angle, ~ticks=ticks, ~handleRelease=?onRelease)),
         ~onPanResponderMove=`callback(PanResponder.callback(handleMove(~origin=origin, ~angle=angle))),
         ()
     );
