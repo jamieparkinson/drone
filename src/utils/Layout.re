@@ -22,10 +22,8 @@ let getCirclePosition = (r: radius, index: clockIndex): circlePosition => {
     };
 };
 
-let getPrincipalValue = (theta: float) => {
-    let value = mod_float(theta, 2. *. pi);
-    value < 0. ? value +. (2. *. pi) : value;
-};
+let getPrincipalValue = (theta: float) =>
+    mod_float(mod_float(theta, 2. *. pi) +. (2. *. pi), 2. *. pi);
 
 let getThetaFromPosition = (origin: position, position: position) => {
     let deltaX = position.x -. origin.x;
@@ -35,3 +33,6 @@ let getThetaFromPosition = (origin: position, position: position) => {
 
     getPrincipalValue(theta);
 };
+
+let angleDistance = (a: float, b: float) =>
+    abs_float @@ min((2. *. pi) -. abs_float(a -. b), abs_float(a -. b));

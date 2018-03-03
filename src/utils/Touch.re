@@ -51,12 +51,13 @@ let handleRelease =
     ) => {
     let currentTouchAngle = Layout.getThetaFromPosition(origin, { x: moveX, y: moveY });
     let releaseAngle = Layout.getPrincipalValue(currentTouchAngle +. offset_^);
+    let getDistanceToTick = Layout.angleDistance(releaseAngle);
 
     let closestTick = ticks
         |> Array.mapi((i, tick) => { value: tick, index: i })
         |> Array.fold_left(
             (closestTick, tick) => {
-                let isSmaller = abs_float(releaseAngle -. tick.value) < abs_float(releaseAngle -. closestTick.value);
+                let isSmaller = getDistanceToTick(tick.value) < getDistanceToTick(closestTick.value);
                 isSmaller ? tick : closestTick;
             },
             { index: -1, value: max_float }
@@ -67,9 +68,14 @@ let handleRelease =
     | Some(callback) => callback
     };
 
+    let minTick = Array.fold_left(min, max_float, ticks);
+    let closestTickAngle = closestTick.value == minTick && releaseAngle > Layout.pi
+        ? (2. *. Layout.pi) +. minTick
+        : closestTick.value;
+
     let springAnimation = Animated.Value.Spring.animate(
         ~value=angle,
-        ~toValue=`raw(closestTick.value),
+        ~toValue=`raw(closestTickAngle),
         ~speed=20.,
         ~onComplete=(result) => Js.to_bool(result##finished) ? handleRelease(closestTick.index) : (),
         ()
