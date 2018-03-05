@@ -25,10 +25,11 @@ let make = (_children) => {
         },
     render: (_self) =>
         <View style=Style.(style([flex(1.), justifyContent(Center), alignItems(Center)]))>
-            <Rotatable
-                ticks={Notes.all |> Array.map(Notes.getIndex) |> Array.map(Layout.getThetaFromIndex)}
+            <RotatableDial
+                ticks=Notes.all
+                onRelease={(note) => Js.log(Notes.getResource(note, 2))}
             >
                 <Dial />
-            </Rotatable>
+            </RotatableDial>
         </View>
 };

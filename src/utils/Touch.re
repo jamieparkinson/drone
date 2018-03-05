@@ -1,12 +1,16 @@
 open BsReactNative;
 
 type angle = AnimatedRe.Value.t;
-type ticks = array(float);
+type ticks('a) = array('a);
+type mappedTick('a) = {
+    tick: 'a,
+    angle: float
+};
 type tickRecord = {
     value: float,
     index: int
 };
-type releaseHandler = int => unit;
+type releaseHandler('a) = 'a => unit;
 
 let releaseAngle_ = ref(0.);
 let offset_ = ref(0.);
@@ -14,7 +18,6 @@ let offset_ = ref(0.);
 let handleStart =
     (
         ~origin: Layout.position,
-        ~angle: angle,
         event: RNEvent.NativeEvent.t,
         gesture: PanResponder.gestureState
     ) => {
@@ -32,7 +35,7 @@ let handleMove =
         ~origin: Layout.position,
         ~angle: angle,
         _event,
-        { moveX, moveY, x0, y0 }: PanResponder.gestureState
+        { moveX, moveY }: PanResponder.gestureState
     ) => {
     let currentTouchAngle = Layout.getThetaFromPosition(origin, { x: moveX, y: moveY });
     let newAngle = Layout.getPrincipalValue(currentTouchAngle +. offset_^);
@@ -44,8 +47,8 @@ let handleRelease =
     (
         ~origin: Layout.position,
         ~angle: angle,
-        ~ticks: ticks,
-        ~handleRelease: option(releaseHandler)=?,
+        ~ticks: ticks(mappedTick('a)),
+        ~handleRelease: option(releaseHandler('a))=?,
         _event,
         { moveX, moveY }: PanResponder.gestureState
     ) => {
@@ -53,42 +56,42 @@ let handleRelease =
     let releaseAngle = Layout.getPrincipalValue(currentTouchAngle +. offset_^);
     let getDistanceToTick = Layout.angleDistance(releaseAngle);
 
-    let closestTick = ticks
-        |> Array.mapi((i, tick) => { value: tick, index: i })
+    let closestTick: mappedTick('a) = ticks
         |> Array.fold_left(
             (closestTick, tick) => {
-                let isSmaller = getDistanceToTick(tick.value) < getDistanceToTick(closestTick.value);
+                let isSmaller = getDistanceToTick(tick.angle) < getDistanceToTick(closestTick.angle);
                 isSmaller ? tick : closestTick;
             },
-            { index: -1, value: max_float }
+            ticks[0]
         );
 
-    let handleRelease = switch(handleRelease) {
-    | None => (_n) => ()
+    let callback = switch(handleRelease) {
+    | None => (_n: 'a) => ()
     | Some(callback) => callback
     };
 
-    let minTick = Array.fold_left(min, max_float, ticks);
-    let closestTickAngle = closestTick.value == minTick && releaseAngle > Layout.pi
-        ? (2. *. Layout.pi) +. minTick
-        : closestTick.value;
+    let closestTickAngle = closestTick.angle == 0. && releaseAngle > Layout.pi
+        ? (2. *. Layout.pi)
+        : closestTick.angle;
 
     let springAnimation = Animated.Value.Spring.animate(
         ~value=angle,
         ~toValue=`raw(closestTickAngle),
         ~speed=20.,
-        ~onComplete=(result) => Js.to_bool(result##finished) ? handleRelease(closestTick.index) : (),
+        ~onComplete=(result) => Js.to_bool(result##finished) ? callback(closestTick.tick) : (),
         ()
     );
     Animated.CompositeAnimation.start(springAnimation, ());
 
-    releaseAngle_ := closestTick.value;
+    releaseAngle_ := closestTick.angle;
 };
 
-let panResponderAboutOrigin = (~origin: Layout.position, ~angle: angle, ~ticks: ticks, ~onRelease: option(releaseHandler)=?, ()) =>
+let panResponderAboutOrigin = (~origin: Layout.position, ~angle: angle, ~ticks: ticks('a), ~onRelease: option(releaseHandler('a))=?, ()) => {
+    let mappedTicks: ticks(mappedTick('a)) = Array.mapi((i, tick) => { angle: Layout.((2. *. pi) -. getThetaFromIndex(i)), tick }) @@ ticks;
     PanResponder.create(
-        ~onStartShouldSetPanResponder=PanResponder.callback(handleStart(~origin=origin, ~angle=angle)),
-        ~onPanResponderRelease=PanResponder.callback(handleRelease(~origin=origin, ~angle=angle, ~ticks=ticks, ~handleRelease=?onRelease)),
+        ~onStartShouldSetPanResponder=PanResponder.callback(handleStart(~origin=origin)),
+        ~onPanResponderRelease=PanResponder.callback(handleRelease(~origin=origin, ~angle=angle, ~ticks=mappedTicks, ~handleRelease=?onRelease)),
         ~onPanResponderMove=`callback(PanResponder.callback(handleMove(~origin=origin, ~angle=angle))),
         ()
     );
+}

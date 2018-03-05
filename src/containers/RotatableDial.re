@@ -31,7 +31,7 @@ let rotatingViewStyle = (angle: Touch.angle) => Style.(style([
     )
 ]));
 
-let make = (~ticks: Touch.ticks, ~onRelease: option(Touch.releaseHandler)=?, children) => {
+let make = (~ticks: Touch.ticks('a), ~onRelease: option(Touch.releaseHandler('a))=?, children) => {
     ...component,
     initialState: () => {
         let angle = AnimatedRe.Value.create(0.);

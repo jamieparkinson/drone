@@ -971,7 +971,7 @@ bs-platform@^2.2.1:
 
 bs-react-native@reasonml-community/bs-react-native:
   version "0.5.0"
-  resolved "https://codeload.github.com/reasonml-community/bs-react-native/tar.gz/ea282dd019767bb72e3825f7f953f1359e118d92"
+  resolved "https://codeload.github.com/reasonml-community/bs-react-native/tar.gz/b162c0a0938d264c279ff67dd5721ae2d737d535"
 
 bser@^2.0.0:
   version "2.0.0"
