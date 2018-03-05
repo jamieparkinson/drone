@@ -1,1 +1,1 @@
-let app = () => <App />
+let app = () => <App />;
