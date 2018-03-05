@@ -63,7 +63,7 @@ let handleRelease =
     | Some(callback) => callback
     };
   let closestTickAngle =
-    closestTick.angle == 0. && releaseAngle > Layout.pi ? 2. *. Layout.pi : closestTick.angle;
+    Layout.(closestTick.angle == (2. *. pi) && releaseAngle < pi) ? 0. : closestTick.angle;
   let springAnimation =
     Animated.Value.Spring.animate(
       ~value=angle,
