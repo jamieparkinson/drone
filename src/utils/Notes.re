@@ -12,6 +12,13 @@ type note =
   | Bes
   | B;
 
+type sound = {
+  soundId: SoundPool.soundId,
+  note
+};
+
+type association = list((note, int));
+
 type octave = int;
 
 let all = [|C, Cis, D, Ees, E, F, Fis, G, Aes, A, Bes, B|];
@@ -32,7 +39,7 @@ let getIndex = (note) =>
   | B => 11
   };
 
-let getResource = (note, octave) => {
+let getResource = (octave, note) => {
   let name =
     switch note {
     | C => "c"
@@ -67,3 +74,21 @@ let getDisplayString = (note) =>
   | Bes => {js|B♭|js}
   | B => {js|B|js}
   };
+
+let loadAssociation = (octave, notes: array(note)) =>
+  notes
+  |> Array.map(getResource(octave))
+  |> Array.map(SoundPool.load)
+  |> Js.Promise.all
+  |> Js.Promise.(
+       then_(
+         (sounds) =>
+           sounds
+           |> Array.map(({soundId}: SoundPool.loadResult) => soundId)
+           |> Array.to_list
+           |> List.combine(Array.to_list(notes))
+           |> resolve
+       )
+     );
+
+let getSound = (note, soundAssociation: association) => List.assoc(note, soundAssociation);

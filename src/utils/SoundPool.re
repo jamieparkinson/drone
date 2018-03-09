@@ -38,14 +38,8 @@ let _pool: nativePool = NativeModules.get("SoundPool");
 
 let init = (options: poolOptions) => options |> poolOptionsToJs |> ((o) => _pool##init(o));
 
-let loadNote = (file: fileId) =>
+let load = (file: fileId) =>
   _pool##load(file) |> Js.Promise.(then_((value) => value |> loadResultFromJs |> resolve));
-
-let loadNotes = (files: array(fileId)) =>
-  files
-  |> Array.map((fileId) => _pool##load(fileId))
-  |> Js.Promise.all
-  |> Js.Promise.(then_((ids) => ids |> Array.map(loadResultFromJs) |> resolve));
 
 let play = (options: playOptions, sound: soundId) =>
   options |> playOptionsToJs |> ((o) => _pool##play(sound, o));
