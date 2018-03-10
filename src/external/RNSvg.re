@@ -66,3 +66,44 @@ module Polygon = {
       children
     );
 };
+
+module G = {
+  [@bs.module "react-native-svg"] external g : ReasonReact.reactClass = "G";
+  let make = (~x=0., ~y=0., ~translate: option(string)=?, children) =>
+    ReasonReact.wrapJsForReason(
+      ~reactClass=g,
+      ~props=Js.Nullable.({"x": x, "y": y, "translate": from_opt(translate)}),
+      children
+    );
+};
+
+module Rect = {
+  [@bs.module "react-native-svg"] external rect : ReasonReact.reactClass = "Rect";
+  let make =
+      (
+        ~x: float,
+        ~y: float,
+        ~width: float,
+        ~height: float,
+        ~fill: option(string)=?,
+        ~stroke: option(string)=?,
+        ~strokeWidth: option(float)=?,
+        children
+      ) =>
+    ReasonReact.wrapJsForReason(
+      ~reactClass=rect,
+      ~props=
+        Js.Nullable.(
+          {
+            "x": x,
+            "y": y,
+            "width": width,
+            "height": height,
+            "fill": from_opt(fill),
+            "stroke": from_opt(stroke),
+            "strokeWidth": from_opt(strokeWidth)
+          }
+        ),
+      children
+    );
+};
