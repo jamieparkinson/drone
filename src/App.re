@@ -30,57 +30,73 @@ let playPauseStyle =
   );
 
 let make = (_children) => {
-  ...component,
-  initialState: () => {note: C, sounds: [], playState: Paused},
-  reducer: (action, state) =>
-    switch action {
-    | LoadSounds(octave) =>
-      ReasonReact.SideEffects(
-        (
-          (self) =>
-            Notes.loadAssociation(octave, Notes.all)
-            |> Js.Promise.(then_((association) => self.send @@ SetSounds(association) |> resolve))
-            |> ignore
+  let handleAppStateChange = (_, self) =>
+    switch (self.ReasonReact.state.playState, AppState.currentState()) {
+    | (Playing, Background) => self.send(TogglePlayState)
+    | (_, _) => ()
+    };
+  {
+    ...component,
+    initialState: () => {note: C, sounds: [], playState: Paused},
+    reducer: (action, state) =>
+      switch action {
+      | LoadSounds(octave) =>
+        ReasonReact.SideEffects(
+          (
+            (self) =>
+              Notes.loadAssociation(octave, Notes.all)
+              |> Js.Promise.(
+                   then_((association) => self.send @@ SetSounds(association) |> resolve)
+                 )
+              |> ignore
+          )
         )
-      )
-    | SetSounds(association) => ReasonReact.Update({...state, sounds: association})
-    | SetNote(note) =>
-      ReasonReact.UpdateWithSideEffects(
-        {...state, note},
-        ({state}) => switch (state.playState) {
-          | Playing => playSound @@ Notes.getSound(note, state.sounds)
-          | Paused => ()
-        }
-      )
-    | TogglePlayState =>
-      ReasonReact.UpdateWithSideEffects(
-        {
-          ...state,
-          playState:
-            switch state.playState {
-            | Paused => Playing
-            | Playing => Paused
-            }
-        },
-        (({state}) => {
-          switch (state.playState) {
-          | Playing => playSound @@ Notes.getSound(state.note, state.sounds)
-          | Paused => SoundPool.pauseAll()
-          }
-        })
-      )
+      | SetSounds(association) => ReasonReact.Update({...state, sounds: association})
+      | SetNote(note) =>
+        ReasonReact.UpdateWithSideEffects(
+          {...state, note},
+          (
+            ({state}) =>
+              switch state.playState {
+              | Playing => playSound @@ Notes.getSound(note, state.sounds)
+              | Paused => ()
+              }
+          )
+        )
+      | TogglePlayState =>
+        ReasonReact.UpdateWithSideEffects(
+          {
+            ...state,
+            playState:
+              switch state.playState {
+              | Paused => Playing
+              | Playing => Paused
+              }
+          },
+          (
+            ({state}) =>
+              switch state.playState {
+              | Playing => playSound @@ Notes.getSound(state.note, state.sounds)
+              | Paused => SoundPool.pauseAll()
+              }
+          )
+        )
+      },
+    didMount: (self) => {
+      SoundPool.init({maxStreams: 1, usage: 1, contentType: 2});
+      self.send @@ LoadSounds(2);
+      AppState.addEventListener("change", self.handle(handleAppStateChange));
+      ReasonReact.NoUpdate
     },
-  didMount: (self) => {
-    SoundPool.init({maxStreams: 1, usage: 1, contentType: 2});
-    self.send @@ LoadSounds(2);
-    ReasonReact.NoUpdate
-  },
-  render: (self) =>
-    <View style=Style.(style([flex(1.), justifyContent(Center), alignItems(Center)]))>
-      <Tick />
-      <RotatableDial ticks=Notes.all onRelease=((note) => self.send(SetNote(note)))> <Dial /> </RotatableDial>
-      <TouchableOpacity style=playPauseStyle onPress=(() => self.send(TogglePlayState))>
-        <PlayPause state=self.state.playState />
-      </TouchableOpacity>
-    </View>
+    render: (self) =>
+      <View style=Style.(style([flex(1.), justifyContent(Center), alignItems(Center)]))>
+        <Tick />
+        <RotatableDial ticks=Notes.all onRelease=((note) => self.send(SetNote(note)))>
+          <Dial />
+        </RotatableDial>
+        <TouchableOpacity style=playPauseStyle onPress=(() => self.send(TogglePlayState))>
+          <PlayPause state=self.state.playState />
+        </TouchableOpacity>
+      </View>
+  }
 };
