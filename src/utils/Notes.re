@@ -89,10 +89,25 @@ let getDisplayString = (note) =>
   | B => {js|B|js}
   };
 
-let loadAssociation = (octave, notes: array(note)) =>
+type progressCallback = unit => unit;
+
+let loadAssociation = (octave, notes: array(note), ~onProgress: option(progressCallback)=?) =>
   notes
   |> Array.map(getResource(octave))
   |> Array.map(SoundPool.load)
+  |> Array.map(
+       Js.Promise.(
+         then_(
+           (result) => {
+             switch onProgress {
+             | Some(callback) => callback()
+             | None => ()
+             };
+             resolve(result)
+           }
+         )
+       )
+     )
   |> Js.Promise.all
   |> Js.Promise.(
        then_(

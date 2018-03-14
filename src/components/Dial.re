@@ -31,7 +31,7 @@ let notePosition = (index: int) => {
   )
 };
 
-let make = (_children) => {
+let make = (~nShowing=12, _children) => {
   ...component,
   render: (_self) =>
     <View style=Style.(style([position(Relative)]))>
@@ -46,7 +46,7 @@ let make = (_children) => {
         />
       </Svg>
       (
-        Notes.all
+        Array.sub(Notes.all, 0, nShowing)
         |> Array.mapi(
              (i, note) => <NoteName note position=(notePosition(i)) key=(Notes.getName(note)) />
            )

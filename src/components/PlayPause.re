@@ -4,7 +4,8 @@ open RNSvg;
 
 type playState =
   | Playing
-  | Paused;
+  | Paused
+  | Loading;
 
 let component = ReasonReact.statelessComponent("PlayPause");
 

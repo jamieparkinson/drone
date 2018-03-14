@@ -17,7 +17,7 @@ let fileDimsMax =
        {width: 0., height: 0.}
      );
 
-let displayMax = {width: 30., height: 30.};
+let displayMax = {width: 22., height: 22.};
 
 let getNormalised = (norm: float, max: float, input: float) => norm *. (input /. max);
 

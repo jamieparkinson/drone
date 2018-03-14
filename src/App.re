@@ -4,10 +4,12 @@ type action =
   | SetNote(Notes.note)
   | SetSounds(Notes.association)
   | LoadSounds(Notes.octave)
+  | IncrementNShowing
   | TogglePlayState;
 
 type state = {
   note: Notes.note,
+  nShowingNotes: int,
   sounds: Notes.association,
   playState: PlayPause.playState
 };
@@ -37,21 +39,36 @@ let make = (_children) => {
     };
   {
     ...component,
-    initialState: () => {note: C, sounds: [], playState: Paused},
+    initialState: () => {note: C, nShowingNotes: 0, sounds: [], playState: Loading},
     reducer: (action, state) =>
       switch action {
       | LoadSounds(octave) =>
         ReasonReact.SideEffects(
           (
             (self) =>
-              Notes.loadAssociation(octave, Notes.all)
+              Notes.loadAssociation(
+                octave,
+                Notes.all,
+                ~onProgress=() => self.send(IncrementNShowing)
+              )
               |> Js.Promise.(
                    then_((association) => self.send @@ SetSounds(association) |> resolve)
                  )
               |> ignore
           )
         )
-      | SetSounds(association) => ReasonReact.Update({...state, sounds: association})
+      | IncrementNShowing => ReasonReact.Update({...state, nShowingNotes: state.nShowingNotes + 1})
+      | SetSounds(association) =>
+        ReasonReact.Update({
+          ...state,
+          sounds: association,
+          playState:
+            switch state.playState {
+            | Loading => Paused
+            | Paused => Paused
+            | Playing => Playing
+            }
+        })
       | SetNote(note) =>
         ReasonReact.UpdateWithSideEffects(
           {...state, note},
@@ -71,6 +88,7 @@ let make = (_children) => {
               switch state.playState {
               | Paused => Playing
               | Playing => Paused
+              | Loading => Loading
               }
           },
           (
@@ -78,6 +96,7 @@ let make = (_children) => {
               switch state.playState {
               | Playing => playSound @@ Notes.getSound(state.note, state.sounds)
               | Paused => SoundPool.pauseAll()
+              | _ => ()
               }
           )
         )
@@ -90,12 +109,15 @@ let make = (_children) => {
     },
     render: (self) =>
       <View style=Style.(style([flex(1.), justifyContent(Center), alignItems(Center)]))>
-        <Tick />
+        <Tick visible=(self.state.playState != Loading) />
         <RotatableDial ticks=Notes.all onRelease=((note) => self.send(SetNote(note)))>
-          <Dial />
+          <Dial nShowing=self.state.nShowingNotes />
         </RotatableDial>
         <TouchableOpacity style=playPauseStyle onPress=(() => self.send(TogglePlayState))>
-          <PlayPause state=self.state.playState />
+          (
+            self.state.playState != Loading ?
+              <PlayPause state=self.state.playState /> : ReasonReact.nullElement
+          )
         </TouchableOpacity>
       </View>
   }
