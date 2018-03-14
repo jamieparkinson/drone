@@ -109,6 +109,10 @@ let make = (_children) => {
     },
     render: (self) =>
       <View style=Style.(style([flex(1.), justifyContent(Center), alignItems(Center)]))>
+        <OctaveSelector
+          position=Style.(style([position(Absolute), top(Pt(30.)), left(Pt(30.))]))
+          handleOctaveChanged=1
+        />
         <Tick visible=(self.state.playState != Loading) />
         <RotatableDial ticks=Notes.all onRelease=((note) => self.send(SetNote(note)))>
           <Dial nShowing=self.state.nShowingNotes />
