@@ -8,31 +8,25 @@ let circleRadius = 115.;
 
 let circleBorderWidth = 8.;
 
-let textSize = 25.;
-
-let circlePosition = Layout.getCirclePosition(circleRadius -. textSize);
+let circlePadding = 8.;
 
 let dialWidth: float = 2. *. circleRadius +. circleBorderWidth;
 
 let dialHeight: float = dialWidth;
 
-let noteNameStyle = (index: Layout.clockIndex) => {
-  let {x, y}: Layout.circlePosition = circlePosition(index);
-  let rotation = (Layout.getThetaFromIndex(index) |> string_of_float) ++ "rad";
-  let topPosition = circleRadius -. 9. -. y;
-  let leftPosition = circleRadius -. 9. +. x;
+let notePosition = (index: int) => {
+  let angle = float_of_int(index) *. Geom.twoPi /. float_of_int(Array.length(Notes.all));
+  let notesRadius = circleRadius -. (circlePadding +. 0.5 *. NoteName.displayMax.width);
+  let untranslatedCoords = Geom.coordsOnClock(~r=notesRadius, ~theta=angle);
+  let translation = circlePadding +. 0.5 *. circlePadding;
+  let coords = Geom.add(untranslatedCoords, {x: translation, y: translation});
+  let angleString = string_of_float(angle) ++ "rad";
   Style.(
     style([
       position(Absolute),
-      width(Pt(textSize)),
-      height(Pt(textSize)),
-      lineHeight(textSize),
-      textAlign(Center),
-      color("black"),
-      fontSize(Float(textSize)),
-      top(Pt(topPosition)),
-      left(Pt(leftPosition)),
-      Transform.make(~rotate=rotation, ())
+      top(Pt(coords.y)),
+      left(Pt(coords.x)),
+      Transform.make(~rotate=angleString, ())
     ])
   )
 };
@@ -53,8 +47,9 @@ let make = (_children) => {
       </Svg>
       (
         Notes.all
-        |> Array.map(Notes.getDisplayString)
-        |> Array.mapi((i, note) => <Text key=note value=note style=(noteNameStyle(i)) />)
+        |> Array.mapi(
+             (i, note) => <NoteName note position=(notePosition(i)) key=(Notes.getName(note)) />
+           )
         |> ReasonReact.arrayToElement
       )
     </View>

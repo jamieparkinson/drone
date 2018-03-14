@@ -39,25 +39,39 @@ let getIndex = (note) =>
   | B => 11
   };
 
-let getResource = (octave, note) => {
-  let name =
-    switch note {
-    | C => "c"
-    | Cis => "cis"
-    | D => "d"
-    | Ees => "ees"
-    | E => "e"
-    | F => "f"
-    | Fis => "fis"
-    | G => "g"
-    | Aes => "aes"
-    | A => "a"
-    | Bes => "bes"
-    | B => "b"
-    };
-  let suffix = string_of_int(octave);
-  name ++ suffix
-};
+let getName = (note) =>
+  switch note {
+  | C => "c"
+  | Cis => "cis"
+  | D => "d"
+  | Ees => "ees"
+  | E => "e"
+  | F => "f"
+  | Fis => "fis"
+  | G => "g"
+  | Aes => "aes"
+  | A => "a"
+  | Bes => "bes"
+  | B => "b"
+  };
+
+let getImage = (note) =>
+  switch note {
+  | C => BsReactNative.Packager.require("../../../../static/c.png")
+  | Cis => BsReactNative.Packager.require("../../../../static/cis.png")
+  | D => BsReactNative.Packager.require("../../../../static/d.png")
+  | Ees => BsReactNative.Packager.require("../../../../static/ees.png")
+  | E => BsReactNative.Packager.require("../../../../static/e.png")
+  | F => BsReactNative.Packager.require("../../../../static/f.png")
+  | Fis => BsReactNative.Packager.require("../../../../static/fis.png")
+  | G => BsReactNative.Packager.require("../../../../static/g.png")
+  | Aes => BsReactNative.Packager.require("../../../../static/aes.png")
+  | A => BsReactNative.Packager.require("../../../../static/a.png")
+  | Bes => BsReactNative.Packager.require("../../../../static/bes.png")
+  | B => BsReactNative.Packager.require("../../../../static/b.png")
+  };
+
+let getResource = (octave, note) => getName(note) ++ string_of_int(octave);
 
 let getDisplayString = (note) =>
   switch note {
