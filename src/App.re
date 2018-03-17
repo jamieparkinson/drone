@@ -3,12 +3,14 @@ open BsReactNative;
 type action =
   | SetNote(Notes.note)
   | SetSounds(Notes.association)
-  | LoadSounds(Notes.octave)
+  | SetOctave(Notes.Octave.t)
+  | LoadSounds(Notes.Octave.t)
   | IncrementNShowing
   | TogglePlayState;
 
 type state = {
   note: Notes.note,
+  octave: Notes.Octave.t,
   nShowingNotes: int,
   sounds: Notes.association,
   playState: PlayPause.playState
@@ -39,7 +41,7 @@ let make = (_children) => {
     };
   {
     ...component,
-    initialState: () => {note: C, nShowingNotes: 0, sounds: [], playState: Loading},
+    initialState: () => {note: C, octave: Notes.Octave.setInt(2), nShowingNotes: 0, sounds: [], playState: Loading},
     reducer: (action, state) =>
       switch action {
       | LoadSounds(octave) =>
@@ -80,6 +82,15 @@ let make = (_children) => {
               }
           )
         )
+      | SetOctave(octave) =>
+        ReasonReact.UpdateWithSideEffects(
+          {
+            ...state,
+            nShowingNotes: 0,
+            octave
+          },
+          ((self) => self.send(LoadSounds(self.state.octave)))
+        )
       | TogglePlayState =>
         ReasonReact.UpdateWithSideEffects(
           {
@@ -103,15 +114,20 @@ let make = (_children) => {
       },
     didMount: (self) => {
       SoundPool.init({maxStreams: 1, usage: 1, contentType: 2});
-      self.send @@ LoadSounds(2);
+      self.send @@ LoadSounds(self.state.octave);
       AppState.addEventListener("change", self.handle(handleAppStateChange));
       ReasonReact.NoUpdate
     },
     render: (self) =>
       <View style=Style.(style([flex(1.), justifyContent(Center), alignItems(Center)]))>
         <OctaveSelector
-          position=Style.(style([position(Absolute), top(Pt(30.)), left(Pt(30.))]))
-          handleOctaveChanged=1
+          position=Style.(style([position(Absolute), bottom(Pt(10.)), right(Pt(20.))]))
+          isMax=Notes.Octave.isMax(self.state.octave)
+          isMin=Notes.Octave.isMin(self.state.octave)
+          handleOctaveChanged=((direction) => switch (direction) {
+          | Up => self.send(SetOctave(self.state.octave |> Notes.Octave.increment))
+          | Down => self.send(SetOctave(self.state.octave |> Notes.Octave.decrement))
+          })
         />
         <Tick visible=(self.state.playState != Loading) />
         <RotatableDial ticks=Notes.all onRelease=((note) => self.send(SetNote(note)))>

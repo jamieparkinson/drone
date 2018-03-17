@@ -50,6 +50,9 @@ module Polygon = {
         ~fill: option(string)=?,
         ~stroke: option(string)=?,
         ~strokeWidth: option(float)=?,
+        ~onPress: option(unit => unit)=?,
+        ~onPressIn: option(unit => unit)=?,
+        ~onPressOut: option(unit => unit)=?,
         children
       ) =>
     ReasonReact.wrapJsForReason(
@@ -60,7 +63,10 @@ module Polygon = {
             "points": pointsToPathString(points),
             "fill": from_opt(fill),
             "stroke": from_opt(stroke),
-            "strokeWidth": from_opt(strokeWidth)
+            "strokeWidth": from_opt(strokeWidth),
+            "onPress": from_opt(onPress),
+            "onPressIn": from_opt(onPressIn),
+            "onPressOut": from_opt(onPressOut)
           }
         ),
       children
@@ -88,6 +94,9 @@ module Rect = {
         ~fill: option(string)=?,
         ~stroke: option(string)=?,
         ~strokeWidth: option(float)=?,
+        ~onPress: option(unit => unit)=?,
+        ~onPressIn: option(unit => unit)=?,
+        ~onPressOut: option(unit => unit)=?,
         children
       ) =>
     ReasonReact.wrapJsForReason(
@@ -101,7 +110,10 @@ module Rect = {
             "height": height,
             "fill": from_opt(fill),
             "stroke": from_opt(stroke),
-            "strokeWidth": from_opt(strokeWidth)
+            "strokeWidth": from_opt(strokeWidth),
+            "onPress": from_opt(onPress),
+            "onPressIn": from_opt(onPressIn),
+            "onPressOut": from_opt(onPressOut)
           }
         ),
       children

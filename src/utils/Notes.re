@@ -19,7 +19,31 @@ type sound = {
 
 type association = list((note, int));
 
-type octave = int;
+module Octave: {
+  type t;
+  let setInt: int => t;
+  let getInt: t => int;
+  let increment: t => t;
+  let decrement: t => t;
+  let isMax: t => bool;
+  let isMin: t => bool;
+} = {
+  type t = int;
+  let max_octave = 3;
+  let min_octave = 2;
+  let clamp = (octave: t) =>
+    switch octave {
+    | l when l < min_octave => min_octave
+    | h when h > max_octave => max_octave
+    | n => n
+    };
+  let setInt = (n) => clamp(n);
+  let getInt = (n: t) : int => n;
+  let increment = (n) => clamp(n + 1);
+  let decrement = (n) => clamp(n - 1);
+  let isMax = (n) => n == max_octave;
+  let isMin = (n) => n == min_octave;
+};
 
 let all = [|C, Cis, D, Ees, E, F, Fis, G, Aes, A, Bes, B|];
 
@@ -71,7 +95,8 @@ let getImage = (note) =>
   | B => BsReactNative.Packager.require("../../../../static/b.png")
   };
 
-let getResource = (octave, note) => getName(note) ++ string_of_int(octave);
+let getResource = (octave: Octave.t, note) =>
+  getName(note) ++ string_of_int(Octave.getInt(octave));
 
 let getDisplayString = (note) =>
   switch note {
@@ -91,7 +116,8 @@ let getDisplayString = (note) =>
 
 type progressCallback = unit => unit;
 
-let loadAssociation = (octave, notes: array(note), ~onProgress: option(progressCallback)=?) =>
+let loadAssociation =
+    (octave: Octave.t, notes: array(note), ~onProgress: option(progressCallback)=?) =>
   notes
   |> Array.map(getResource(octave))
   |> Array.map(SoundPool.load)
