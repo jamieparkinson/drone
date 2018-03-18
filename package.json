@@ -12,6 +12,7 @@
     "bs-react-native": "reasonml-community/bs-react-native",
     "react": "16.2.0",
     "react-native": "0.53.3",
+    "react-native-keep-awake": "^3.0.1",
     "react-native-svg": "^6.2.2",
     "reason-react": "^0.3.2"
   },

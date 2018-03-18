@@ -49,6 +49,7 @@
 		9067AA6D6F424D53B234EBA0 /* Lato-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B885D4CB862427D840BC8E4 /* Lato-Light.ttf */; };
 		047A9D54DD7742978116B2A5 /* Lato-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93AA169C88A24435BD79C6C4 /* Lato-LightItalic.ttf */; };
 		685C7EA8568C49EBB2A39C6B /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01E25406CEB74884B5F241F0 /* Lato-Regular.ttf */; };
+		9ABE0246AF144B95A268525A /* libKCKeepAwake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4051CC6BEC4B412E8863CB2E /* libKCKeepAwake.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -314,6 +315,8 @@
 		1B885D4CB862427D840BC8E4 /* Lato-Light.ttf */ = {isa = PBXFileReference; name = "Lato-Light.ttf"; path = "../static/fonts/Lato-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		93AA169C88A24435BD79C6C4 /* Lato-LightItalic.ttf */ = {isa = PBXFileReference; name = "Lato-LightItalic.ttf"; path = "../static/fonts/Lato-LightItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		01E25406CEB74884B5F241F0 /* Lato-Regular.ttf */ = {isa = PBXFileReference; name = "Lato-Regular.ttf"; path = "../static/fonts/Lato-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8A39234FD61B4C3E81886CC4 /* KCKeepAwake.xcodeproj */ = {isa = PBXFileReference; name = "KCKeepAwake.xcodeproj"; path = "../node_modules/react-native-keep-awake/ios/KCKeepAwake.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		4051CC6BEC4B412E8863CB2E /* libKCKeepAwake.a */ = {isa = PBXFileReference; name = "libKCKeepAwake.a"; path = "libKCKeepAwake.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -345,6 +348,7 @@
 				69B6D7B4AA8842739693570E /* libRNSound.a in Frameworks */,
 				4305F644AD1A4F4E892F8DD5 /* libRNSVG.a in Frameworks */,
 				B527159204AB4CCE9EAEDDF4 /* libRNSVG-tvOS.a in Frameworks */,
+				9ABE0246AF144B95A268525A /* libKCKeepAwake.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -525,6 +529,7 @@
 				B7983A521BEC4C0BBE7BD2B7 /* RNSound.xcodeproj */,
 				FBFDA00BFB214CE78D582987 /* RNSound.xcodeproj */,
 				69C5BF165FBB47AAB758E044 /* RNSVG.xcodeproj */,
+				8A39234FD61B4C3E81886CC4 /* KCKeepAwake.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1127,12 +1132,14 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sound-exoplayer/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-sound-exoplayer/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 				);
 			};
 			name = Debug;
@@ -1156,12 +1163,14 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sound-exoplayer/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-sound-exoplayer/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 				);
 			};
 			name = Release;
@@ -1186,6 +1195,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sound-exoplayer/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-sound-exoplayer/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 				);
 			};
 			name = Debug;
@@ -1209,6 +1219,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sound-exoplayer/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-sound-exoplayer/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 				);
 			};
 			name = Release;
@@ -1241,12 +1252,14 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sound-exoplayer/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-sound-exoplayer/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 				);
 			};
 			name = Debug;
@@ -1279,12 +1292,14 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sound-exoplayer/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-sound-exoplayer/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 				);
 			};
 			name = Release;
@@ -1312,6 +1327,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 			};
 			name = Debug;
@@ -1336,6 +1352,7 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

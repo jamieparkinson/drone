@@ -99,8 +99,12 @@ let make = (_children) => {
           (
             ({state}) =>
               switch state.playState {
-              | Playing => playSound @@ Notes.getSound(state.note, state.sounds)
-              | Paused => SoundPool.pauseAll()
+              | Playing =>
+                playSound @@ Notes.getSound(state.note, state.sounds);
+                RNKeepAwake.activate()
+              | Paused =>
+                SoundPool.pauseAll();
+                RNKeepAwake.deactivate()
               | _ => ()
               }
           )
