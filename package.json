@@ -8,19 +8,23 @@
     "watch": "bsb -make-world -clean-world -w"
   },
   "dependencies": {
-    "bs-platform": "^2.2.1",
-    "bs-react-native": "reasonml-community/bs-react-native",
-    "react": "16.2.0",
-    "react-native": "0.53.3",
-    "react-native-keep-awake": "^3.0.1",
-    "react-native-svg": "^6.2.2",
-    "reason-react": "^0.3.2"
+    "bs-platform": "^4.0.3",
+    "bs-react-native": "reasonml-community/bs-react-native@v0.10.0-rc.0",
+    "react": "16.9.0",
+    "react-native": "0.61.5",
+    "react-native-keep-awake": "^4.0.0",
+    "react-native-svg": "^12.0.3",
+    "reason-react": "^0.7.0"
   },
   "devDependencies": {
-    "babel-jest": "22.4.1",
-    "babel-preset-react-native": "4.0.0",
-    "jest": "22.4.2",
-    "react-test-renderer": "16.2.0"
+    "@babel/core": "^7.9.0",
+    "@babel/runtime": "^7.9.2",
+    "@react-native-community/eslint-config": "^0.0.7",
+    "babel-jest": "^25.1.0",
+    "eslint": "^6.8.0",
+    "jest": "^25.1.0",
+    "metro-react-native-babel-preset": "^0.59.0",
+    "react-test-renderer": "16.9.0"
   },
   "jest": {
     "preset": "react-native"
