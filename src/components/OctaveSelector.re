@@ -18,7 +18,7 @@ let labelStyle =
       left(Pt(0.)),
       color(String(labelColor)),
       fontFamily("Lato-Italic"),
-      fontSize(Float(14.))
+      fontSize(Float(14.)),
     ])
   );
 
@@ -43,16 +43,16 @@ let make =
       ~isMax: bool=false,
       ~isMin: bool=false,
       ~handleOctaveChanged: direction => unit,
-      _children
+      _children,
     ) => {
   ...component,
   initialState: () => {pressState: None},
   reducer: (action, state) =>
-    switch action {
+    switch (action) {
     | SetPressState(newState, direction) =>
       ReasonReact.Update({pressState: Some((newState, direction))})
     },
-  render: (self) =>
+  render: self =>
     <View style=(Style.combine(position, layout))>
       <Text value="8ve" style=labelStyle />
       <Svg width=30. height=75.>
@@ -91,5 +91,5 @@ let make =
           )
         />
       </Svg>
-    </View>
+    </View>,
 };
