@@ -16,7 +16,7 @@ let labelStyle =
       position(Relative),
       top(Pt(41.)),
       left(Pt(0.)),
-      color(labelColor),
+      color(String(labelColor)),
       fontFamily("Lato-Italic"),
       fontSize(Float(14.))
     ])

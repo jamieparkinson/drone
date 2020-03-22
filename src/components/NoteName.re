@@ -51,7 +51,7 @@ let make = (~note: Notes.note, ~position: Style.t, _children) => {
   render: (_self) =>
     <View style=Style.combine(wrapperStyle, position)>
       <Image
-        source=(Required(Notes.getImage(note)))
+        source=(`Required(Notes.getImage(note)))
         style=(note |> Notes.getImage |> RNPrivate.resolveAssetSource |> imageStyle)
       />
     </View>

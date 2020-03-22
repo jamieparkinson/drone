@@ -114,7 +114,6 @@ let make = (_children) => {
       SoundPool.init({maxStreams: 1, usage: 1, contentType: 2});
       self.send @@ LoadSounds(self.state.octave);
       AppState.addEventListener("change", self.handle(handleAppStateChange));
-      ReasonReact.NoUpdate
     },
     render: (self) =>
       <View style=Style.(style([flex(1.), justifyContent(Center), alignItems(Center)]))>

@@ -69,7 +69,7 @@ let handleRelease =
       ~value=angle,
       ~toValue=`raw(closestTickAngle),
       ~speed=20.,
-      ~onComplete=(result) => Js.to_bool(result##finished) ? callback(closestTick.tick) : (),
+      ~onComplete=(result) => result##finished ? callback(closestTick.tick) : (),
       ()
     );
   Animated.CompositeAnimation.start(springAnimation, ());
